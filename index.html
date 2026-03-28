@@ -2,16 +2,45 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>ערוץ האמת - 1080p נקי</title>
+    <title>ערוץ האמת - שידור חסין</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: black; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <iframe 
-        src="https://inv.tux.rs/embed/playlist?list=PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy&autoplay=1&continue=1&quality=dash&quality_dash=1080p" 
-        allow="autoplay; fullscreen">
-    </iframe>
+    <iframe id="player" allow="autoplay; fullscreen"></iframe>
+    <script>
+        // רשימת השרתים הכי יציבים בעולם כרגע
+        const servers = [
+            'https://yewtu.be',
+            'https://invidious.lunar.icu',
+            'https://inv.nadeko.net'
+        ];
+        const playlistId = 'PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy';
+        const params = '/embed/playlist?list=' + playlistId + '&autoplay=1&continue=1&quality=dash&quality_dash=1080p';
+        
+        let current = 0;
+        const iframe = document.getElementById('player');
+
+        function loadServer() {
+            if (current < servers.length) {
+                console.log("מנסה שרת: " + servers[current]);
+                iframe.src = servers[current] + params;
+                current++;
+            }
+        }
+
+        // אם השרת לא עונה תוך 5 שניות, עוברים לבא בתור
+        setTimeout(function() {
+            try {
+                if(!iframe.contentWindow || iframe.contentWindow.location.href == "about:blank") {
+                    loadServer();
+                }
+            } catch(e) { /* DNS Error catches here */ }
+        }, 5000);
+
+        loadServer();
+    </script>
 </body>
 </html>
