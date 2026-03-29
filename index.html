@@ -2,55 +2,16 @@
 <html lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>ערוץ האמת - שידור חי</title>
+    <title>ערוץ האמת - 1080p נקי</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: black; overflow: hidden; }
-        #player { width: 100%; height: 100%; pointer-events: none; } /* מונע לחיצות מיותרות */
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <div id="player"></div>
-
-    <script>
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '1080',
-                width: '1920',
-                playerVars: {
-                    'listType': 'playlist',
-                    'list': 'PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy',
-                    'autoplay': 1,
-                    'controls': 0,      // מעלים פקדים
-                    'disablekb': 1,    // מבטל מקלדת
-                    'fs': 0,           // מבטל מסך מלא
-                    'modestbranding': 1, // מוריד לוגו יוטיוב
-                    'rel': 0,          // מונע סרטונים מומלצים בסוף
-                    'iv_load_policy': 3 // מונע בועות כיתוב
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            event.target.mute(); // חובה להפעיל מושתק כדי שהאוטופליי יעבוד בפריזם
-            event.target.playVideo();
-            setTimeout(function() { event.target.unMute(); }, 1000); // מחזיר סאונד אחרי שניה
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-                player.playVideo(); // מבטיח רציפות
-            }
-        }
-    </script>
+    <iframe 
+        src="https://piped.kavin.rocks/embed/playlists/PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy?autoplay=1" 
+        allow="autoplay; fullscreen">
+    </iframe>
 </body>
 </html>
