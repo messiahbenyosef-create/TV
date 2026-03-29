@@ -1,1 +1,78 @@
-DONE
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; background-color: black; overflow: hidden; }
+        #player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
+    </style>
+</head>
+<body>
+    <div id="overlay"></div>
+    <div id="player"></div>
+
+    <script>
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        var lastTime = -1;
+        var stuckCount = 0;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '1080', width: '1920',
+                playerVars: {
+                    'listType': 'playlist',
+                    'list': 'PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy',
+                    'autoplay': 1, 'controls': 0, 'modestbranding': 1, 'iv_load_policy': 3, 'rel': 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': () => player.nextVideo()
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            // מנגנון ה-Watchdog: בודק כל 2 שניות אם הוידאו זז
+            setInterval(checkIfStuck, 2000);
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                player.nextVideo();
+            }
+        }
+
+        function checkIfStuck() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            
+            var currentTime = player.getCurrentTime();
+            var state = player.getPlayerState();
+
+            // אם הנגן במצב "מנגן" או "טוען" אבל הזמן לא זז
+            if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
+                if (currentTime === lastTime) {
+                    stuckCount++;
+                } else {
+                    stuckCount = 0;
+                }
+            }
+
+            lastTime = currentTime;
+
+            // אם הוידאו תקוע על אותה שניה יותר מ-4 שניות (2 בדיקות) -> דלג
+            if (stuckCount >= 2) {
+                console.log("זיהוי תקיעה/מסך אפור - מדלג סרטון...");
+                stuckCount = 0;
+                player.nextVideo();
+            }
+        }
+    </script>
+</body>
+</html>
