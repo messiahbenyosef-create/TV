@@ -1,12 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="he">
 <head>
+    <meta charset="UTF-8">
+    <title>מצב חירום - ניקוי מערכת</title>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; }
-        iframe { width: 100vw; height: 100vh; border: none; }
+        /* דף שחור לגמרי שלא לוקח משאבים מהכרטיס מסך */
+        body { margin: 0; background-color: black; overflow: hidden; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; }
     </style>
 </head>
 <body>
-    <iframe src="https://inv.tux.rs/embed/playlist/PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy?autoplay=1" allow="autoplay"></iframe>
+    <div id="status">המערכת בתהליך ניקוי...</div>
+
+    <iframe 
+        id="player"
+        width="100%" 
+        height="100%" 
+        src="https://www.youtube.com/embed/videoseries?list=PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy&autoplay=0" 
+        frameborder="0" 
+        allow="autoplay; encrypted-media" 
+        style="position: absolute; top: 0; left: 0; opacity: 0.1;">
+    </iframe>
 </body>
 </html>
