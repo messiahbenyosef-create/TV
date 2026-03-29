@@ -1,17 +1,40 @@
 <!DOCTYPE html>
-<html lang="he">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>ערוץ האמת - שידור חי</title>
+    <title>ערוץ האמת - 1080p נקי</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: black; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; }
+        video { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
-    <iframe 
-        src="https://piped.privacydev.net/embed/PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy?autoplay=1" 
-        allow="autoplay; fullscreen">
-    </iframe>
+    <video id="player" controls autoplay muted playsinline></video>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        // הכתובת הזו מושכת את הווידאו הגולמי משרת Proxy שלא מאפשר פרסומות
+        var video = document.getElementById('player');
+        var videoSrc = 'https://pipedapi.privacydev.net/proxy/hls/manifest.m3u8?id=PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy';
+
+        if (Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play();
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function() {
+                video.play();
+            });
+        }
+        
+        // מנגנון שמוודא שאין עצירות
+        video.onended = function() {
+            location.reload();
+        };
+    </script>
 </body>
 </html>
