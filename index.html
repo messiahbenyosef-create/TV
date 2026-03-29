@@ -1,17 +1,46 @@
 <!DOCTYPE html>
-<html lang="he">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>ערוץ האמת - שידור חי</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: black; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; }
+        #player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
 <body>
-    <iframe 
-        src="https://www.youtube-nocookie.com/embed/videoseries?list=PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy&autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&mute=1" 
-        allow="autoplay; fullscreen">
-    </iframe>
+    <div id="player"></div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                playerVars: {
+                    'listType': 'playlist',
+                    'list': 'PL6CIuAjEdCPNYPThikfE9sj_wBg2cKYmy',
+                    'autoplay': 1,
+                    'controls': 0,
+                    'mute': 1,           // מתחיל מושתק כדי למנוע מסך שחור
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'showinfo': 0
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            // מחזיר סאונד אחרי 2 שניות כדי לעקוף את החסימה של פריזם
+            setTimeout(function() { 
+                event.target.unMute(); 
+                event.target.setVolume(100);
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
